@@ -4,6 +4,9 @@ describe('Login', () => {
     cy.fixture('user').as('userData')
     cy.visit('/')
     cy.ensureNoModal()
+
+    // WAIT FOR NAVBAR
+    cy.get('#login2', { timeout: 8000 }).should('be.visible')
   })
 
   it('should login with valid credentials', function() {
