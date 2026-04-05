@@ -1,31 +1,21 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ...})
 // LOGIN COMMAND
 Cypress.Commands.add('login', (username, password) => {
-  cy.get('#login2').click()
+
+  // CLOSE ANY OPEN MODALS FIRST
+  cy.get('body').then($body => {
+    if ($body.find('#signInModal.show').length) {
+      cy.get('#signInModal .btn-secondary').click({ force: true })
+    }
+    if ($body.find('#logInModal.show').length) {
+      cy.get('#logInModal .btn-secondary').click({ force: true })
+    }
+  })
+
+  // WAIT UNTIL NO MODAL IS VISIBLE
+  cy.get('.modal.show').should('not.exist')
+
+  // NOW CLICK LOGIN BUTTON
+  cy.get('#login2').click({ force: true })
 
   cy.get('#logInModal').should('be.visible')
 
@@ -40,15 +30,4 @@ Cypress.Commands.add('login', (username, password) => {
     .type(password)
 
   cy.get('button[onclick="logIn()"]').click()
-})
-
-
-// FILL ORDER FORM COMMAND
-Cypress.Commands.add('fillOrderForm', (data) => {
-  cy.get('#name').type(data.name)
-  cy.get('#country').type(data.country)
-  cy.get('#city').type(data.city)
-  cy.get('#card').type(data.card)
-  cy.get('#month').type(data.month)
-  cy.get('#year').type(data.year)
 })

@@ -7,18 +7,23 @@ describe('Login', () => {
 
   it('should login with valid credentials', function() {
 
-    // REGISTER USER (works even if user already exists)
+    // REGISTER
     cy.get('#signin2').click()
     cy.get('#sign-username').type(this.userData.username)
     cy.get('#sign-password').type(this.userData.password)
     cy.contains('Sign up').click()
 
-    cy.on('window:alert', () => {}) // ignore "User already exists"
+    cy.on('window:alert', () => {})
 
-    cy.wait(1000)
+    // WAIT FOR MODAL TO CLOSE
+    cy.get('#signInModal', { timeout: 5000 })
+      .should('not.be.visible')
 
     // LOGIN
-    cy.login(this.userData.username, this.userData.password)
+    cy.get('#login2').click()
+    cy.get('#loginusername').type(this.userData.username)
+    cy.get('#loginpassword').type(this.userData.password)
+    cy.contains('Log in').click()
 
     cy.contains(`Welcome ${this.userData.username}`, { timeout: 5000 })
       .should('be.visible')
