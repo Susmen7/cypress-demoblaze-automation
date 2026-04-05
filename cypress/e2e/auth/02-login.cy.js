@@ -10,8 +10,6 @@ describe('Login', () => {
 
 cy.wait(1000) // backend potrebuje čas uložiť používateľa
 
-
-
     cy.contains(`Welcome ${this.userData.username}`, { timeout: 5000 })
       .should('be.visible')
   })
