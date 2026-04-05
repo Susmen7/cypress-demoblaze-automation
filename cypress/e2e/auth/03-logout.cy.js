@@ -12,9 +12,12 @@ describe('Logout', () => {
     cy.get('#sign-username').type(this.userData.username)
     cy.get('#sign-password').type(this.userData.password)
     cy.contains('Sign up').click()
+
     cy.on('window:alert', () => {})
 
-    cy.wait(1000)
+    // CLOSE SIGNUP MODAL
+    cy.get('#signInModal .btn-secondary').click({ force: true })
+    cy.get('#signInModal').should('not.be.visible')
 
     // LOGIN
     cy.login(this.userData.username, this.userData.password)

@@ -1,7 +1,6 @@
-// LOGIN COMMAND
 Cypress.Commands.add('login', (username, password) => {
 
-  // CLOSE ANY OPEN MODALS FIRST
+  // CLOSE ANY OPEN MODALS
   cy.get('body').then($body => {
     if ($body.find('#signInModal.show').length) {
       cy.get('#signInModal .btn-secondary').click({ force: true })
@@ -11,7 +10,7 @@ Cypress.Commands.add('login', (username, password) => {
     }
   })
 
-  // WAIT UNTIL NO MODAL IS VISIBLE
+  // WAIT UNTIL ALL MODALS ARE CLOSED
   cy.get('.modal.show').should('not.exist')
 
   // NOW CLICK LOGIN BUTTON

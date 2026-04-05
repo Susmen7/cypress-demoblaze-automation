@@ -7,7 +7,7 @@ describe('Login', () => {
 
   it('should login with valid credentials', function() {
 
-    // REGISTER
+    // REGISTER USER
     cy.get('#signin2').click()
     cy.get('#sign-username').type(this.userData.username)
     cy.get('#sign-password').type(this.userData.password)
@@ -15,15 +15,12 @@ describe('Login', () => {
 
     cy.on('window:alert', () => {})
 
-    // WAIT FOR MODAL TO CLOSE
-    cy.get('#signInModal', { timeout: 5000 })
-      .should('not.be.visible')
+    // CLOSE SIGNUP MODAL
+    cy.get('#signInModal .btn-secondary').click({ force: true })
+    cy.get('#signInModal').should('not.be.visible')
 
     // LOGIN
-    cy.get('#login2').click()
-    cy.get('#loginusername').type(this.userData.username)
-    cy.get('#loginpassword').type(this.userData.password)
-    cy.contains('Log in').click()
+    cy.login(this.userData.username, this.userData.password)
 
     cy.contains(`Welcome ${this.userData.username}`, { timeout: 5000 })
       .should('be.visible')
