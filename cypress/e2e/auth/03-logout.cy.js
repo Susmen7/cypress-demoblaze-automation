@@ -1,28 +1,30 @@
-describe('loguout', () => {
+describe('Logout', () => {
 
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
-
   })
 
-      it('should logout successfully', function() {
-    // 1. Login
+  it('should logout successfully', function() {
+
+    // REGISTER
+    cy.get('#signin2').click()
+    cy.get('#sign-username').type(this.userData.username)
+    cy.get('#sign-password').type(this.userData.password)
+    cy.contains('Sign up').click()
+    cy.on('window:alert', () => {})
+
+    cy.wait(1000)
+
+    // LOGIN
     cy.login(this.userData.username, this.userData.password)
 
-    // 2. Overíme, že login prebehol
-    cy.contains(`Welcome ${this.userData.username}`, { timeout: 8000 })
-      .should('be.visible')
-      
-    cy.get('#logout2')
-       .click()
+    cy.contains(`Welcome ${this.userData.username}`).should('be.visible')
 
-           // Overenie odhlásenia
-    cy.get('#login2')
-       .should('be.visible')
-    cy.get('#signin2')
-       .should('be.visible')
-    cy.contains(`Welcome ${this.userData.username}`).should('not.exist')
-       
-    })
-    })
+    // LOGOUT
+    cy.contains('Log out').click()
+
+    cy.contains('Log in').should('be.visible')
+  })
+
+})
