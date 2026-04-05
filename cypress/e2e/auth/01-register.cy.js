@@ -1,3 +1,4 @@
+// trigger CI
 describe('Register', () => {
   it('should register a new user', () => {
     const username = 'patrik' + Math.floor(Math.random() * 100)
