@@ -1,29 +1,35 @@
 describe('Logout', () => {
 
-  beforeEach(function() {
-    cy.fixture('user').as('userData')
+  beforeEach(() => {
     cy.visit('/')
   })
 
-  it('should logout successfully', function() {
+  it('should register, login and logout with unique user', () => {
+
+    const username = `user_${Date.now()}`
+    const password = 'test123'
 
     // REGISTER
-    cy.request('POST', 'https://api.demoblaze.com/signup', {
-      username: this.userData.username,
-      password: this.userData.password
-    })
+    cy.get('#signin2').click()
+    cy.get('#sign-username').type(username)
+    cy.get('#sign-password').type(password)
+    cy.contains('Sign up').click()
+
+    cy.on('window:alert', () => {})
+
+    // CLOSE SIGNUP MODAL
+    cy.get('#signInModal .btn-secondary').click({ force: true })
+    cy.get('#signInModal').should('not.be.visible')
 
     // LOGIN
-    cy.request('POST', 'https://api.demoblaze.com/login', {
-      username: this.userData.username,
-      password: this.userData.password
-    })
+    cy.get('#login2').click()
+    cy.get('#loginusername').type(username)
+    cy.get('#loginpassword').type(password)
+    cy.contains('Log in').click()
 
-    cy.reload()
+    cy.contains(`Welcome ${username}`).should('be.visible')
 
-    cy.contains(`Welcome ${this.userData.username}`).should('be.visible')
-
-    // LOGOUT (UI)
+    // LOGOUT
     cy.contains('Log out').click()
 
     cy.contains('Log in').should('be.visible')
