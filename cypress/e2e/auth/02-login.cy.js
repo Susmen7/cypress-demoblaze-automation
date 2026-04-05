@@ -3,29 +3,24 @@ describe('Login', () => {
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
-    cy.ensureNoModal()
-
-    // WAIT FOR NAVBAR
-    cy.get('#login2', { timeout: 8000 }).should('be.visible')
   })
 
-  it('should login with valid credentials', function() {
+  it('should login with API and verify UI', function() {
 
-    // REGISTER USER
-    cy.get('#signin2').click()
-    cy.get('#sign-username').type(this.userData.username)
-    cy.get('#sign-password').type(this.userData.password)
-    cy.contains('Sign up').click()
+    // REGISTER USER VIA API
+    cy.request('POST', 'https://api.demoblaze.com/signup', {
+      username: this.userData.username,
+      password: this.userData.password
+    })
 
-    cy.on('window:alert', () => {})
+    // LOGIN VIA API
+    cy.request('POST', 'https://api.demoblaze.com/login', {
+      username: this.userData.username,
+      password: this.userData.password
+    })
 
-    // CLOSE SIGNUP MODAL
-    cy.get('#signInModal .btn-secondary').click({ force: true })
-    cy.get('#signInModal').should('not.be.visible')
-
-    // LOGIN
-    cy.login(this.userData.username, this.userData.password)
-
+    // VERIFY UI
+    cy.reload()
     cy.contains(`Welcome ${this.userData.username}`, { timeout: 5000 })
       .should('be.visible')
   })

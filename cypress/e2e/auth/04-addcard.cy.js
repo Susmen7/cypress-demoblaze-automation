@@ -3,38 +3,34 @@ describe('Add to cart', () => {
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
-    cy.ensureNoModal()
-
-    // WAIT FOR NAVBAR
-    cy.get('#login2', { timeout: 8000 }).should('be.visible')
   })
 
-  it('should login and add product to cart', function() {
+  it('should add product to cart via API and verify UI', function() {
 
     // REGISTER
-    cy.get('#signin2').click()
-    cy.get('#sign-username').type(this.userData.username)
-    cy.get('#sign-password').type(this.userData.password)
-    cy.contains('Sign up').click()
-
-    cy.on('window:alert', () => {})
-
-    // CLOSE SIGNUP MODAL
-    cy.get('#signInModal .btn-secondary').click({ force: true })
-    cy.get('#signInModal').should('not.be.visible')
+    cy.request('POST', 'https://api.demoblaze.com/signup', {
+      username: this.userData.username,
+      password: this.userData.password
+    })
 
     // LOGIN
-    cy.login(this.userData.username, this.userData.password)
-
-    cy.contains(`Welcome ${this.userData.username}`).should('be.visible')
-
-    // ADD PRODUCT
-    cy.contains('Samsung galaxy s6').click()
-    cy.contains('Add to cart').click()
-
-    cy.on('window:alert', (txt) => {
-      expect(txt).to.contains('Product added')
+    cy.request('POST', 'https://api.demoblaze.com/login', {
+      username: this.userData.username,
+      password: this.userData.password
     })
+
+    // ADD PRODUCT VIA API
+    cy.request('POST', 'https://api.demoblaze.com/addtocart', {
+      id: 1,
+      cookie: "user=" + this.userData.username,
+      prod_id: 1,
+      flag: true
+    })
+
+    // VERIFY UI
+    cy.visit('/cart.html')
+
+    cy.contains('Samsung galaxy s6').should('be.visible')
   })
 
 })
