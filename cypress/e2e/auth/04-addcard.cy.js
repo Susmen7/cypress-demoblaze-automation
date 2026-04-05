@@ -3,6 +3,7 @@ describe('Add to cart', () => {
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
+    cy.ensureNoModal()
   })
 
   it('should login and add product to cart', function() {

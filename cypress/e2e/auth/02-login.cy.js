@@ -3,6 +3,7 @@ describe('Login', () => {
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
+    cy.ensureNoModal()
   })
 
   it('should login with valid credentials', function() {

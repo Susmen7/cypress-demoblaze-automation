@@ -3,6 +3,7 @@ describe('Logout', () => {
   beforeEach(function() {
     cy.fixture('user').as('userData')
     cy.visit('/')
+    cy.ensureNoModal()
   })
 
   it('should logout successfully', function() {

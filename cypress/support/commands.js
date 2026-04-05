@@ -1,19 +1,22 @@
-Cypress.Commands.add('login', (username, password) => {
-
-  // CLOSE ANY OPEN MODALS
+// GLOBAL FIX – CLOSE ANY OPEN MODALS BEFORE ANY ACTION
+Cypress.Commands.add('ensureNoModal', () => {
   cy.get('body').then($body => {
-    if ($body.find('#signInModal.show').length) {
-      cy.get('#signInModal .btn-secondary').click({ force: true })
-    }
-    if ($body.find('#logInModal.show').length) {
-      cy.get('#logInModal .btn-secondary').click({ force: true })
+    if ($body.find('.modal.show').length) {
+      cy.get('.modal.show .btn-secondary').click({ force: true })
     }
   })
 
-  // WAIT UNTIL ALL MODALS ARE CLOSED
-  cy.get('.modal.show').should('not.exist')
+  cy.get('.modal.show', { timeout: 5000 }).should('not.exist')
+})
 
-  // NOW CLICK LOGIN BUTTON
+
+// LOGIN COMMAND
+Cypress.Commands.add('login', (username, password) => {
+
+  // ALWAYS ENSURE NO MODAL IS OPEN
+  cy.ensureNoModal()
+
+  // OPEN LOGIN MODAL
   cy.get('#login2').click({ force: true })
 
   cy.get('#logInModal').should('be.visible')
