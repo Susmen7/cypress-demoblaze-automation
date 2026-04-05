@@ -1,3 +1,4 @@
+//Trigger CI
 name: Cypress Tests
 
 on:
