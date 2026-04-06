@@ -1,32 +1,28 @@
-describe('Login', () => {
+describe('Login only', () => {
 
-  beforeEach(() => {
-    cy.visit('/')
-  })
+  it('should login with existing user', () => {
 
-  it('should register and login with unique user', () => {
-
-    const username = `user_${Date.now()}`
+    const username = 'patrik'
     const password = 'test123'
 
-    // REGISTER
-    cy.get('#signin2').click()
-    cy.get('#sign-username').type(username)
-    cy.get('#sign-password').type(password)
-    cy.contains('Sign up').click()
+    cy.visit('/')
 
-    cy.on('window:alert', () => {})
-
-    // CLOSE SIGNUP MODAL
-    cy.get('#signInModal .btn-secondary').click({ force: true })
-    cy.get('#signInModal').should('not.be.visible')
-
-    // LOGIN
+    // OPEN LOGIN MODAL
     cy.get('#login2').click()
+
+    // WAIT FOR MODAL + INPUTS
+    cy.get('#logInModal').should('be.visible')
+    cy.get('#loginusername').should('be.visible')
+    cy.get('#loginpassword').should('be.visible')
+
+    // FILL LOGIN FORM
     cy.get('#loginusername').type(username)
     cy.get('#loginpassword').type(password)
-    cy.contains('Log in').click()
 
+    // SUBMIT LOGIN
+    cy.get('#logInModal .btn-primary').click()
+
+    // ASSERT LOGIN SUCCESS
     cy.contains(`Welcome ${username}`, { timeout: 5000 })
       .should('be.visible')
   })
