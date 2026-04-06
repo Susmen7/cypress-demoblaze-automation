@@ -14,7 +14,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create test user for CI
+        run: |
+          echo '{ "username": "patrik", "password": "test123" }' > cypress/fixtures/user.json
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
+          config: defaultCommandTimeout=8000,video=false
