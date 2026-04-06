@@ -5,6 +5,11 @@ module.exports = defineConfig({
     baseUrl: "https://www.demoblaze.com",
     viewportWidth: 1280,
     viewportHeight: 720,
-    retries: 1,
+
+    // RETRIES – stabilné pre CI
+    retries: {
+      runMode: 2,   // CI
+      openMode: 0   // lokálne
+    }
   },
 });
