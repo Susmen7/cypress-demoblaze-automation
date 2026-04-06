@@ -26,6 +26,9 @@ jobs:
         run: |
           echo '{ "username": "patrik", "password": "test123" }' > cypress/fixtures/user.json
 
+      - name: Wait for Demoblaze to be ready
+        run: npx wait-on https://www.demoblaze.com
+
       - name: Cypress run
         uses: cypress-io/github-action@v6
         with:
