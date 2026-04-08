@@ -1,17 +1,36 @@
 describe('Full E2E purchase flow', () => {
-  it('should login, add product, purchase and logout', () => {
+  it('should register, login, add product, purchase and logout', () => {
 
     cy.fixture('user').then(({ username, password }) => {
+
+      // Generate unique username for CI
+      const uniqueUser = username + Date.now();
 
       // Visit homepage
       cy.visit('/');
 
-      // Login (stabilná verzia pre CI)
-      cy.get('#login2').click();
+      //
+      // REGISTER USER (CI NEEDS THIS)
+      //
+      cy.get('#signin2').click();
+      cy.get('#signInModal').should('be.visible');
+      cy.get('#sign-username').should('be.visible').type(uniqueUser, { delay: 50 });
+      cy.get('#sign-password').should('be.visible').type(password, { delay: 50 });
+      cy.get('#signInModal .btn-primary').click();
 
-      // počkaj, kým sa modal naozaj otvorí
+      cy.on('window:alert', (text) => {
+        expect(text).to.include('Sign up successful');
+      });
+
+      // Wait for modal to close
+      cy.get('#signInModal').should('not.be.visible');
+
+      //
+      // LOGIN (stabilná verzia pre CI)
+      //
+      cy.get('#login2').click();
       cy.get('#logInModal').should('be.visible');
-      cy.get('#loginusername').should('be.visible').type(username, { delay: 50 });
+      cy.get('#loginusername').should('be.visible').type(uniqueUser, { delay: 50 });
       cy.get('#loginpassword').should('be.visible').type(password, { delay: 50 });
 
       cy.get('#logInModal .btn-primary')
@@ -20,23 +39,30 @@ describe('Full E2E purchase flow', () => {
         .click();
 
       // počkaj na login (CI potrebuje viac času)
-      cy.contains(`Welcome ${username}`, { timeout: 15000 }).should('be.visible');
+      cy.contains(`Welcome ${uniqueUser}`, { timeout: 15000 }).should('be.visible');
 
-      // Open first product
+      //
+      // OPEN PRODUCT
+      //
       cy.get('.hrefch').first().click();
 
-      // Add to cart
+      //
+      // ADD TO CART
+      //
       cy.contains('Add to cart').click();
 
-      // Confirm alert
       cy.on('window:alert', (text) => {
         expect(text).to.include('Product added');
       });
 
-      // Go to cart
+      //
+      // GO TO CART
+      //
       cy.get('#cartur').click();
 
-      // Place order
+      //
+      // PLACE ORDER
+      //
       cy.contains('Place Order').click();
 
       // Fill form
@@ -50,7 +76,9 @@ describe('Full E2E purchase flow', () => {
       // Purchase
       cy.contains('Purchase').click();
 
-      // Verify confirmation modal
+      //
+      // VERIFY CONFIRMATION
+      //
       cy.get('.sweet-alert').should('be.visible');
       cy.contains('Thank you for your purchase!').should('be.visible');
 
@@ -62,13 +90,14 @@ describe('Full E2E purchase flow', () => {
           expect(orderId).to.match(/^\d+$/);
         });
 
-      // Close modal (force because Demoblaze is buggy)
+      // Close modal
       cy.get('.confirm').click({ force: true });
 
-      // Wait until modal is REALLY gone
       cy.get('.sweet-alert').should('not.exist');
 
-      // Logout (force because modal sometimes leaves invisible overlay)
+      //
+      // LOGOUT
+      //
       cy.contains('Log out').click({ force: true });
     });
   });
