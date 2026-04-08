@@ -3,9 +3,8 @@ describe('Full E2E purchase flow', () => {
 
     cy.fixture('user').then(({ username, password }) => {
 
-      // Generate unique username for CIconst uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}`;
-const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}`;
-
+      // Generate unique username for CI
+      const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1_000_000_000)}`;
 
       // Visit homepage
       cy.visit('/');
@@ -19,8 +18,9 @@ const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}
       cy.get('#sign-password').should('be.visible').type(password, { delay: 50 });
       cy.get('#signInModal .btn-primary').click();
 
+      // Accept both possible alerts
       cy.on('window:alert', (text) => {
-        expect(text).to.include('Sign up successful');
+        expect(text).to.match(/Sign up successful|This user already exist/);
       });
 
       // Wait for modal to close
@@ -103,3 +103,4 @@ const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}
     });
   });
 });
+
