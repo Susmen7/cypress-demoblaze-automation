@@ -6,40 +6,36 @@ describe('Full E2E purchase flow', () => {
       // Generate unique username for CI
       const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1_000_000_000)}`;
 
+      // GLOBAL ALERT HANDLER (jediný, spoločný)
+      cy.on('window:alert', (text) => {
+        expect(text).to.match(
+          /Sign up successful|This user already exist|Product added|Wrong password|Please fill out Username and Password/
+        );
+      });
+
       // Visit homepage
       cy.visit('/');
 
       //
-      // REGISTER USER (CI NEEDS THIS)
+      // REGISTER USER
       //
       cy.get('#signin2').click();
       cy.get('#signInModal').should('be.visible');
-      cy.get('#sign-username').should('be.visible').type(uniqueUser, { delay: 50 });
-      cy.get('#sign-password').should('be.visible').type(password, { delay: 50 });
+      cy.get('#sign-username').type(uniqueUser, { delay: 50 });
+      cy.get('#sign-password').type(password, { delay: 50 });
       cy.get('#signInModal .btn-primary').click();
 
-      // Accept both possible alerts
-      cy.on('window:alert', (text) => {
-        expect(text).to.match(/Sign up successful|This user already exist/);
-      });
-
-      // Wait for modal to close
       cy.get('#signInModal').should('not.be.visible');
 
       //
-      // LOGIN (stabilná verzia pre CI)
+      // LOGIN
       //
       cy.get('#login2').click();
       cy.get('#logInModal').should('be.visible');
-      cy.get('#loginusername').should('be.visible').type(uniqueUser, { delay: 50 });
-      cy.get('#loginpassword').should('be.visible').type(password, { delay: 50 });
+      cy.get('#loginusername').type(uniqueUser, { delay: 50 });
+      cy.get('#loginpassword').type(password, { delay: 50 });
+      cy.get('#logInModal .btn-primary').click();
 
-      cy.get('#logInModal .btn-primary')
-        .should('be.visible')
-        .and('not.be.disabled')
-        .click();
-
-      // počkaj na login (CI potrebuje viac času)
       cy.contains(`Welcome ${uniqueUser}`, { timeout: 15000 }).should('be.visible');
 
       //
@@ -51,11 +47,6 @@ describe('Full E2E purchase flow', () => {
       // ADD TO CART
       //
       cy.contains('Add to cart').click();
-
-      // Demoblaze je bugnutý → môže vrátiť hocičo
-      cy.on('window:alert', (text) => {
-        expect(text).to.match(/Product added|This user already exist|Wrong password|Please fill out Username and Password/);
-      });
 
       //
       // GO TO CART
@@ -84,7 +75,6 @@ describe('Full E2E purchase flow', () => {
       cy.get('.sweet-alert').should('be.visible');
       cy.contains('Thank you for your purchase!').should('be.visible');
 
-      // Extract order ID
       cy.get('.sweet-alert p')
         .invoke('text')
         .then((text) => {
@@ -92,7 +82,6 @@ describe('Full E2E purchase flow', () => {
           expect(orderId).to.match(/^\d+$/);
         });
 
-      // Close modal
       cy.get('.confirm').click({ force: true });
 
       cy.get('.sweet-alert').should('not.exist');
