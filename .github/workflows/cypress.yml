@@ -22,11 +22,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Wait for Demoblaze (stabilizácia)
-        uses: jakejarvis/wait-action@master
+      - name: Wait for Demoblaze
+        uses: ifaxity/wait-on-action@v1
         with:
-          url: https://www.demoblaze.com
-          timeout: 30
+          resource: https://www.demoblaze.com
+          timeout: 30000
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
