@@ -17,10 +17,10 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Wait for Demoblaze (stabilizácia)
         uses: jakejarvis/wait-action@master
@@ -28,11 +28,11 @@ jobs:
           url: https://www.demoblaze.com
           timeout: 30
 
-      - name: Run Cypress tests with retries
+      - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
           browser: chrome
-          command: npx cypress run --retries 2
+          config: defaultCommandTimeout=8000,video=false
 
       - name: Upload screenshots on failure
         if: failure()
