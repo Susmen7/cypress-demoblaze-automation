@@ -29,7 +29,10 @@ jobs:
           timeout: 30
 
       - name: Run Cypress tests with retries
-        run: npx cypress run --browser chrome --retries 2
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          command: npx cypress run --retries 2
 
       - name: Upload screenshots on failure
         if: failure()
