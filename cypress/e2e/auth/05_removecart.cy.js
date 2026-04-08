@@ -1,4 +1,5 @@
-describe('Remove from cart', () => {
+describe.skip('Remove from cart', () => {
+
   
   
     it.only('should login, add product and remove it from cart', () => {

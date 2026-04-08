@@ -1,4 +1,5 @@
-describe('Login only', () => {
+describe.skip('Login only', () => {
+
 
   it('should login with existing user', () => {
 

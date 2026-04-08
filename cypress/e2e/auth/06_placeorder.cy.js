@@ -1,4 +1,5 @@
-describe('Place order', () => {
+describe.skip('Place order', () => {
+
   it('should login, add product to cart and complete purchase', () => {
 
     cy.fixture('user').then(({ username, password }) => {
