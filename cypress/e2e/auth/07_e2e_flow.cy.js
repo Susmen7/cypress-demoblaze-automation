@@ -3,8 +3,9 @@ describe('Full E2E purchase flow', () => {
 
     cy.fixture('user').then(({ username, password }) => {
 
-      // Generate unique username for CI
-      const uniqueUser = username + Date.now();
+      // Generate unique username for CIconst uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}`;
+const uniqueUser = `user_${Date.now()}_${Math.floor(Math.random() * 1000000000)}`;
+
 
       // Visit homepage
       cy.visit('/');
