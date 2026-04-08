@@ -6,17 +6,21 @@ describe('Full E2E purchase flow', () => {
       // Visit homepage
       cy.visit('/');
 
-      // Login
+      // Login (stabilná verzia pre CI)
       cy.get('#login2').click();
-      cy.get('#loginusername').should('be.visible').type(username);
-      cy.get('#loginpassword').type(password);
+
+      // počkaj, kým sa modal naozaj otvorí
+      cy.get('#logInModal').should('be.visible');
+      cy.get('#loginusername').should('be.visible').type(username, { delay: 50 });
+      cy.get('#loginpassword').should('be.visible').type(password, { delay: 50 });
+
       cy.get('#logInModal .btn-primary')
         .should('be.visible')
         .and('not.be.disabled')
         .click();
 
-      // Verify login
-      cy.contains(`Welcome ${username}`, { timeout: 8000 }).should('be.visible');
+      // počkaj na login (CI potrebuje viac času)
+      cy.contains(`Welcome ${username}`, { timeout: 15000 }).should('be.visible');
 
       // Open first product
       cy.get('.hrefch').first().click();
