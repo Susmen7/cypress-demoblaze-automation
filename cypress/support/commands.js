@@ -16,6 +16,11 @@ Cypress.Commands.add('login', (username, password) => {
   // ALWAYS ENSURE NO MODAL IS OPEN
   cy.ensureNoModal()
 
+
+    const username = 'patrik'     // existujúci user
+    const password = 'test123'
+
+
   // OPEN LOGIN MODAL
   cy.get('#login2').click({ force: true })
 

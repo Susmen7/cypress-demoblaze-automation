@@ -10,8 +10,9 @@ describe('Add to cart', () => {
 
   it('should login and add product to cart', () => {
 
-    const username = 'patrik'     // existujúci user
+   const username = 'patrik'     // existujúci user
     const password = 'test123'
+
 
     // LOGIN
     cy.get('#login2').click()
